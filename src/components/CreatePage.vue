@@ -49,7 +49,15 @@
 
 <script>
 export default {
-    props: ['pageCreated'],
+    emits:{
+        pageCreated({pageTitle, content, link}){
+            if (!pageTitle || !content || !link || !link.text || !link.url) {
+                return false;
+            }
+
+            return true;
+        }
+    },
     computed:{
         // computed props return a value, use existing data to compute a value that is used in a template, does not change state or mutate anything.
         isFormInvalid(){ // Verify that all parts of the component that have a model are properly filled in, then enable the button
@@ -72,7 +80,7 @@ export default {
                 return;
             }
 
-            this.pageCreated({
+            this.$emit('pageCreated', {
                 pageTitle: this.pageTitle,
                 content: this.content,
                 link: {
@@ -80,11 +88,17 @@ export default {
                     url: this.linkUrl
                 },
                 published: this.published,
-            })
+            });
+
+            this.pageTitle='';
+            this.content = '';
+            this.linkText = '';
+            this.linkUrl = '';
+            this.published = true;
         }
     },
     watch:{
-        // watches for the change of a property and allows to mutate state
+        // watch props watch for the change of a property and allows to mutate state
         pageTitle(newTitle, oldTitle){
             if(this.linkText === oldTitle){
                 this.linkText = newTitle;

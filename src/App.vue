@@ -1,16 +1,22 @@
+TODO: FIX BUG THAT DOESN'T LET ME ADD NEW PAGES
+    bookmark: 2h28 on video
+    bugfix: maybe aroun 2h25
+
 <template>
-    <navbar :pages="pages" :active-page="activePage" :nav-link-click="(index) => activePage = index"></navbar>
+    <navbar 
+    :pages="pages"
+    :active-page="activePage"
+    ></navbar>
 
 <div v-show="false"></div>
 
-    <!-- <page-viewer
+    <page-viewer
     v-if="pages.length > 0"
-    :page="pages[activePage]"></page-viewer> -->
+    :page="pages[activePage]"></page-viewer>
 
     <create-page
-    :page-created="pageCreated">
-
-    </create-page>
+    @page-created="pageCreated"
+    ></create-page>
 
 </template>
 
@@ -26,6 +32,14 @@ export default {
         CreatePage
 
     },
+    created(){
+        // Created gets called before the components are loaded in, allowing for data to be processed before loading components that might use it.
+        this.getPages();
+
+        this.$bus.$on('navbarLinkActivated', (index) =>{
+            this.activePage = index;
+        });
+    },
     data() {
         // to decide when to load data it's good to assess if the data is going to be used by
         // multiple components or just a single component
@@ -33,10 +47,6 @@ export default {
             activePage: 0,
             pages: []
         };
-    },
-    created(){
-        // Created gets called before the components are loaded in, allowing for data to be processed before loading components that might use it.
-        this.getPages();
     },
     methods:{
         async getPages(){
