@@ -31,7 +31,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox">
+                            <input class="form-check-input" type="checkbox" v-model="published">
                             <label class="form-check-label" for="gridCheck1">
                                 Published
                             </label>
@@ -51,6 +51,7 @@
 export default {
     props: ['pageCreated'],
     computed:{
+        // computed props return a value, use existing data to compute a value that is used in a template, does not change state or mutate anything.
         isFormInvalid(){ // Verify that all parts of the component that have a model are properly filled in, then enable the button
             return !this.pageTitle || !this.content || !this.linkText || !this.linkUrl;
         }
@@ -61,6 +62,7 @@ export default {
             content: '',
             linkText: '',
             linkUrl: '',
+            published: true,
         }
     },
     methods: {
@@ -76,8 +78,17 @@ export default {
                 link: {
                     text:this.linkText,
                     url: this.linkUrl
-                }
+                },
+                published: this.published,
             })
+        }
+    },
+    watch:{
+        // watches for the change of a property and allows to mutate state
+        pageTitle(newTitle, oldTitle){
+            if(this.linkText === oldTitle){
+                this.linkText = newTitle;
+            }
         }
     }
 }
