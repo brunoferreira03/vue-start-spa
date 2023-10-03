@@ -1,26 +1,54 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <navbar :pages="pages" :active-page="activePage" :nav-link-click="(index) => activePage = index"></navbar>
+
+<div v-show="false"></div>
+
+    <!-- <page-viewer
+    v-if="pages.length > 0"
+    :page="pages[activePage]"></page-viewer> -->
+
+    <create-page
+    :page-created="pageCreated">
+
+    </create-page>
+
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Navbar from './components/Navbar.vue'
+import PageViewer from './components/PageViewer.vue';
+import CreatePage from './components/CreatePage.vue';
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
+    components: {
+        Navbar,
+        PageViewer,
+        CreatePage
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+    },
+    data() {
+        // to decide when to load data it's good to assess if the data is going to be used by
+        // multiple components or just a single component
+        return {
+            activePage: 0,
+            pages: []
+        };
+    },
+    created(){
+        // Created gets called before the components are loaded in, allowing for data to be processed before loading components that might use it.
+        this.getPages();
+    },
+    methods:{
+        async getPages(){
+            let res = await fetch('pages.json')
+            let data = await res.json();
+
+            this.pages = data;
+        },
+        pageCreated(pageObj){
+            console.log(pageObj);
+        }
+    }
 }
-</style>
+
+</script>
